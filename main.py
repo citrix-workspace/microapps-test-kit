@@ -3,6 +3,7 @@ import json
 from collections import defaultdict
 import argparse
 import os
+import tempfile
 
 def check_supported_auth(file_json):
     if file_json["services"][0]["configuration"]["security"]["type"] == "None":
@@ -90,23 +91,22 @@ def generate_service_action_report(sa_failures, results_file):
 
 def main(mappFile):
 
-    tempDir = 'tmp'
-    with zipfile.ZipFile(mappFile, 'r') as zin:
-        os.system('mkdir {}'.format(tempDir))
-        zin.extractall(tempDir)
+    with tempfile.TemporaryDirectory() as tempDir:
+        with zipfile.ZipFile(mappFile, 'r') as zin:
+            zin.extractall(tempDir)
 
-    configuration_failures = []
+        configuration_failures = []
 
-    with open("tmp/metadata.json", "r") as metadata:
-        metadata_json = json.load(metadata)
-        configuration_failures.extend(check_oauth_actions(metadata_json))
+        with open("{}/metadata.json".format(tempDir), "r") as metadata:
+            metadata_json = json.load(metadata)
+            configuration_failures.extend(check_oauth_actions(metadata_json))
 
-    with open("tmp/file.sapp", "r") as metadata:
-        file_json = json.load(metadata)
+        with open("{}/file.sapp".format(tempDir), "r") as metadata:
+            file_json = json.load(metadata)
 
-        configuration_failures.extend(check_supported_auth(file_json))
-        endpoint_failures = check_endpoints(file_json)
-        sa_failures = check_service_actions(file_json)
+            configuration_failures.extend(check_supported_auth(file_json))
+            endpoint_failures = check_endpoints(file_json)
+            sa_failures = check_service_actions(file_json)
 
     output_file = "results.txt"
     with open(output_file, "w") as results_file:
@@ -114,12 +114,11 @@ def main(mappFile):
         generate_endpoint_report(endpoint_failures, results_file)
         generate_service_action_report(sa_failures, results_file)
 
-    os.system('rm -rf {}'.format(tempDir))
 
 if __name__ == "__main__":
     # python3 main.py --file ServiceNowHTTPnew.service.mapp
     parser = argparse.ArgumentParser(description='Test microapp bundle against best practices')
-    parser.add_argument('--file', dest='mappFile', help='name and location of the mapp export file')
+    parser.add_argument('--file', dest='mappFile', help='name and location of the mapp export file', required=True)
 
     args = parser.parse_args()
     main(args.mappFile)

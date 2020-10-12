@@ -1,5 +1,5 @@
 # Microapp Test Kit
-This repository contains code to assist with the validation of Citrix microapp bundles, to ensure they comply with [best practices](https://developer.cloud.com/workspace-connector/integration-best-practices).
+This repository contains code to assist with the validation of Citrix microapp bundles, to check they comply with [best practices](https://developer.cloud.com/workspace-connector/integration-best-practices). This script can help to identify some common issues, but is not guaranteed to find everything.
 
 The test kit checks microapp bundles for the following conditions:
 
@@ -11,7 +11,7 @@ The test kit checks microapp bundles for the following conditions:
 
 The test kit will then output a file called "results.txt" which provides details on any failed tests.
 
-If you are submitting a microapp to Citrix Ready it is required that you run this script beforehand and provide justification for any failed tests (for example, an endpoint may not support pagination).
+If you are submitting a microapp to Citrix Ready it is auggested that you run this script beforehand and provide justification for any failed tests (for example, an endpoint may not support pagination). It is likely that your microapp will fail some of the tests, this is not a problem as long as there is a reasonable explanation.
 
 # Steps
 
