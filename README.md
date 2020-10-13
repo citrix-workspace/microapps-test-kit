@@ -19,5 +19,3 @@ If you are submitting a microapp to Citrix Ready it is auggested that you run th
 1. Copy the exported file into this directory
 1. Run the script: `python3 main.py --file <file_name>.mapp`
 1. View the results in "results.py"
-
-For an example results file, see results_example.txt
